@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import quizData from '@/data/quizData';
 import Question from './Question';
@@ -10,25 +10,45 @@ interface QuizProps {
 }
 
 const Quiz: React.FC<QuizProps> = ({ onRestart }) => {
+  // State to store the randomized questions for this quiz session
+  const [randomizedQuestions, setRandomizedQuestions] = useState<typeof quizData>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<(number | null)[]>(Array(quizData.length).fill(null));
+  const [answers, setAnswers] = useState<(number | null)[]>([]);
   const [showResult, setShowResult] = useState(false);
   const [quizComplete, setQuizComplete] = useState(false);
   const [score, setScore] = useState(0);
   const [timerActive, setTimerActive] = useState(false);
 
+  // Function to shuffle questions
+  const shuffleQuestions = useCallback(() => {
+    // Create a copy of the quiz data to shuffle
+    const shuffled = [...quizData]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 10) // Ensure we only take 10 questions
+      .map((q, idx) => ({ ...q, id: idx + 1 })); // Reassign IDs to be sequential
+    
+    setRandomizedQuestions(shuffled);
+    // Reset answers array to match the number of questions
+    setAnswers(Array(shuffled.length).fill(null));
+  }, []);
+
+  // Initialize quiz with shuffled questions
+  useEffect(() => {
+    shuffleQuestions();
+  }, [shuffleQuestions]);
+
   // Calculate the score when the quiz is completed
   useEffect(() => {
-    if (quizComplete) {
+    if (quizComplete && randomizedQuestions.length > 0) {
       let correctAnswers = 0;
       answers.forEach((answer, index) => {
-        if (answer === quizData[index].correctAnswer) {
+        if (answer === randomizedQuestions[index].correctAnswer) {
           correctAnswers++;
         }
       });
       setScore(correctAnswers);
     }
-  }, [quizComplete, answers]);
+  }, [quizComplete, answers, randomizedQuestions]);
 
   // Handle answer selection
   const handleAnswer = (answerIndex: number) => {
@@ -44,7 +64,7 @@ const Quiz: React.FC<QuizProps> = ({ onRestart }) => {
     let timer: NodeJS.Timeout;
     if (timerActive && showResult) {
       timer = setTimeout(() => {
-        if (currentQuestionIndex < quizData.length - 1) {
+        if (currentQuestionIndex < randomizedQuestions.length - 1) {
           setCurrentQuestionIndex(prevIndex => prevIndex + 1);
           setShowResult(false);
         } else {
@@ -54,11 +74,11 @@ const Quiz: React.FC<QuizProps> = ({ onRestart }) => {
       }, 3000);
     }
     return () => clearTimeout(timer);
-  }, [timerActive, showResult, currentQuestionIndex]);
+  }, [timerActive, showResult, currentQuestionIndex, randomizedQuestions.length]);
 
   // Handle next question button click
   const handleNextQuestion = () => {
-    if (currentQuestionIndex < quizData.length - 1) {
+    if (currentQuestionIndex < randomizedQuestions.length - 1) {
       setCurrentQuestionIndex(prevIndex => prevIndex + 1);
       setShowResult(false);
     } else {
@@ -66,8 +86,23 @@ const Quiz: React.FC<QuizProps> = ({ onRestart }) => {
     }
   };
 
+  // Handle restart with new random questions
+  const handleRestart = () => {
+    setCurrentQuestionIndex(0);
+    setShowResult(false);
+    setQuizComplete(false);
+    setTimerActive(false);
+    shuffleQuestions();
+    onRestart(); // Call the parent's onRestart function
+  };
+
   if (quizComplete) {
-    return <Result score={score} totalQuestions={quizData.length} onRestart={onRestart} />;
+    return <Result score={score} totalQuestions={randomizedQuestions.length} onRestart={handleRestart} />;
+  }
+
+  // If questions haven't loaded yet, show a loading state
+  if (randomizedQuestions.length === 0) {
+    return <div>Loading questions...</div>;
   }
 
   return (
@@ -75,7 +110,7 @@ const Quiz: React.FC<QuizProps> = ({ onRestart }) => {
       <AnimatePresence mode="wait">
         <Question
           key={currentQuestionIndex}
-          question={quizData[currentQuestionIndex]}
+          question={randomizedQuestions[currentQuestionIndex]}
           currentAnswer={answers[currentQuestionIndex]}
           setAnswer={handleAnswer}
           showResult={showResult}
@@ -92,8 +127,8 @@ const Quiz: React.FC<QuizProps> = ({ onRestart }) => {
         <div className="w-full max-w-md bg-gray-200 h-1.5 rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-stripe-blue"
-            initial={{ width: `${(currentQuestionIndex / quizData.length) * 100}%` }}
-            animate={{ width: `${((currentQuestionIndex + (showResult ? 1 : 0)) / quizData.length) * 100}%` }}
+            initial={{ width: `${(currentQuestionIndex / randomizedQuestions.length) * 100}%` }}
+            animate={{ width: `${((currentQuestionIndex + (showResult ? 1 : 0)) / randomizedQuestions.length) * 100}%` }}
             transition={{ duration: 0.3 }}
           />
         </div>
@@ -106,7 +141,7 @@ const Quiz: React.FC<QuizProps> = ({ onRestart }) => {
             onClick={handleNextQuestion}
             className="btn-primary ml-4 whitespace-nowrap flex items-center gap-2"
           >
-            {currentQuestionIndex < quizData.length - 1 ? (
+            {currentQuestionIndex < randomizedQuestions.length - 1 ? (
               <>
                 Next
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

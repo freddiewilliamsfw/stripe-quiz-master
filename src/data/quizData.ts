@@ -10,123 +10,123 @@ export interface QuizQuestion {
 const quizData: QuizQuestion[] = [
   {
     id: 1,
-    question: "What is Stripe's primary payment processing model?",
+    question: "Which Stripe API version format is used for all requests?",
     options: [
-      "Flat monthly fee",
-      "Pay-per-use with percentage + fixed fee",
-      "Annual licensing fee",
-      "Subscription tiers based on transaction volume"
+      "YYYY-MM-DD",
+      "vYYYY-MM-DD",
+      "YYYY/MM/DD",
+      "v.YYYY.MM.DD"
     ],
-    correctAnswer: 1,
-    explanation: "Stripe primarily charges on a per-transaction basis with a percentage plus a fixed fee (e.g., 2.9% + $0.30 for online transactions in the US)."
+    correctAnswer: 0,
+    explanation: "Stripe API versions use the format YYYY-MM-DD. When you make a request, Stripe recommends pinning to a specific date-based version rather than using the latest version."
   },
   {
     id: 2,
-    question: "Which Stripe product allows businesses to create customizable checkout experiences?",
+    question: "Which of these is NOT a valid Stripe.js integration pattern?",
     options: [
-      "Stripe Terminal",
-      "Stripe Connect",
-      "Stripe Elements",
-      "Stripe Atlas"
+      "Elements",
+      "Checkout",
+      "Direct API integration",
+      "Payment Links"
     ],
-    correctAnswer: 2,
-    explanation: "Stripe Elements provides customizable UI components that allow developers to create their own branded checkout experiences while still leveraging Stripe's security and functionality."
+    correctAnswer: 3,
+    explanation: "Payment Links is a no-code solution, not a Stripe.js integration pattern. The valid patterns are Elements (for custom UIs), Checkout (for pre-built forms), and Direct API integration (for non-web platforms)."
   },
   {
     id: 3,
-    question: "What is Stripe Radar?",
+    question: "What's the main distinction between Stripe Checkout and Stripe Elements?",
     options: [
-      "A point-of-sale hardware device",
-      "A fraud prevention and detection system",
-      "A customer analytics dashboard",
-      "A payment dispute resolution service"
+      "Checkout is for one-time payments, Elements is for subscriptions",
+      "Checkout is pre-built and hosted by Stripe, Elements lets you build custom UI components",
+      "Checkout is for web, Elements is for mobile apps",
+      "Checkout supports cards only, Elements supports alternative payment methods"
     ],
     correctAnswer: 1,
-    explanation: "Stripe Radar is a fraud prevention system that uses machine learning to identify and block fraudulent transactions before they occur."
+    explanation: "Stripe Checkout provides a pre-built, Stripe-hosted payment page, while Elements gives you building blocks to create your own custom payment forms with Stripe's JavaScript library."
   },
   {
     id: 4,
-    question: "Which Stripe product is designed specifically for marketplaces and platforms to facilitate payments between businesses and their users?",
+    question: "Which Stripe product enables creating custom ledgers for real-time financial reporting?",
     options: [
-      "Stripe Billing",
-      "Stripe Connect",
+      "Stripe Sigma",
       "Stripe Terminal",
-      "Stripe Checkout"
+      "Stripe Treasury",
+      "Stripe Financial Connections"
     ],
-    correctAnswer: 1,
-    explanation: "Stripe Connect allows platforms and marketplaces to facilitate payments between businesses and their customers or service providers, handling the complexity of multi-party payments."
+    correctAnswer: 2,
+    explanation: "Stripe Treasury provides embedded banking capabilities, including the ability to create custom ledgers for financial reporting and reconciliation."
   },
   {
     id: 5,
-    question: "What is Stripe Identity used for?",
+    question: "In Stripe's payment processing flow, what happens during the 'authorization' step?",
     options: [
-      "Employee authentication within Stripe Dashboard",
-      "ID verification for high-risk transactions",
-      "Creating digital identities for cryptocurrency transactions",
-      "Managing user profiles in Stripe's database"
+      "Money is transferred from customer to merchant",
+      "The bank confirms that the customer has sufficient funds",
+      "The customer approves the payment method for future use",
+      "Stripe verifies the merchant's identity"
     ],
     correctAnswer: 1,
-    explanation: "Stripe Identity provides ID verification tools that help businesses verify their customers' identities, reducing fraud and complying with regulations like KYC (Know Your Customer)."
+    explanation: "During authorization, the card issuer or bank checks if the customer has sufficient funds and holds them for the transaction, without actually transferring the money yet."
   },
   {
     id: 6,
-    question: "Which Stripe feature allows for recurring billing and subscription management?",
+    question: "What is the function of Stripe's idempotency keys?",
     options: [
-      "Stripe Checkout",
-      "Stripe Connect",
-      "Stripe Billing",
-      "Stripe Payments"
+      "To authenticate API requests",
+      "To encrypt sensitive payment data",
+      "To prevent duplicate transactions when retrying requests",
+      "To identify unique customers across multiple platforms"
     ],
     correctAnswer: 2,
-    explanation: "Stripe Billing provides tools for subscription management, recurring billing, invoicing, and managing free trials and promotional periods."
+    explanation: "Idempotency keys ensure that API requests can be retried without accidentally performing the same operation twice, which is critical for preventing duplicate charges when network issues occur."
   },
   {
     id: 7,
-    question: "What is Stripe Terminal?",
+    question: "Which of these payment methods does Stripe Checkout NOT support natively?",
     options: [
-      "A command-line interface for developers",
-      "An in-person payment solution with physical card readers",
-      "A virtual terminal for manually entering card details",
-      "A code editor for Stripe integrations"
+      "Apple Pay",
+      "SEPA Direct Debit",
+      "Western Union",
+      "Alipay"
     ],
-    correctAnswer: 1,
-    explanation: "Stripe Terminal is Stripe's in-person payment solution that includes physical card readers and SDKs, allowing businesses to accept in-person payments with the same integration as their online payments."
+    correctAnswer: 2,
+    explanation: "Stripe Checkout does not natively support Western Union. It supports many digital payment methods including cards, Apple Pay, Google Pay, Alipay, and SEPA Direct Debit among others."
   },
   {
     id: 8,
-    question: "Which Stripe product allows businesses to issue virtual and physical cards?",
+    question: "What is a Payment Intent in Stripe's API?",
     options: [
-      "Stripe Capital",
-      "Stripe Treasury",
-      "Stripe Issuing",
-      "Stripe Atlas"
+      "A customer's saved payment method",
+      "A tracker for the lifecycle of the payment process",
+      "A webhook notification about payment status",
+      "A subscription billing schedule"
     ],
-    correctAnswer: 2,
-    explanation: "Stripe Issuing enables businesses to create, distribute, and manage virtual and physical cards for employees, contractors, or programmatic spending."
+    correctAnswer: 1,
+    explanation: "A Payment Intent tracks the lifecycle of a customer payment from initial creation through the entire checkout process, handling any required authentication steps and eventual payment completion."
   },
   {
     id: 9,
-    question: "What functionality does Stripe Climate provide?",
+    question: "Which Stripe product allows developers to verify user identities with document uploads?",
     options: [
-      "Carbon offset purchases for businesses",
-      "Environmental impact monitoring for transactions",
-      "Renewable energy credits for Stripe data centers",
-      "Weather-based pricing optimization"
+      "Stripe Connect",
+      "Stripe Identity",
+      "Stripe Radar",
+      "Stripe Atlas"
     ],
-    correctAnswer: 0,
-    explanation: "Stripe Climate allows businesses to direct a portion of their revenue to carbon removal technologies, helping to combat climate change."
+    correctAnswer: 1,
+    explanation: "Stripe Identity offers ID verification capabilities, allowing businesses to verify users' identities by collecting and verifying their government-issued ID documents and matching selfies."
   },
   {
     id: 10,
-    question: "What is Stripe Atlas primarily designed to help with?",
+    question: "What can Stripe Tax automatically determine for merchants?",
     options: [
-      "Tax compliance and reporting",
-      "Global expansion and localization",
-      "Business incorporation and setup",
-      "Customer relationship management"
+      "Business expense categorization for accounting",
+      "Tax filing deadlines across jurisdictions", 
+      "Tax rates, registration requirements, and filing obligations",
+      "Payroll tax requirements for employees"
     ],
     correctAnswer: 2,
-    explanation: "Stripe Atlas helps entrepreneurs form a company by handling the legal complexity of incorporation, setting up a business bank account, and providing tools and guidance for running an internet business."
+    explanation: "Stripe Tax helps businesses calculate, collect, and report accurate taxes by automatically determining tax rates based on customer location and product type, along with handling registration requirements and filing obligations."
   }
 ];
 
