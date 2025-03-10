@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    outDir: "dist",
+    outDir: "docs", // Changed from "dist" to "docs"
     assetsDir: "assets",
     sourcemap: true,
     assetsInlineLimit: 4096,
